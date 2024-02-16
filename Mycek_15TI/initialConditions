@@ -1,0 +1,41 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.2                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+ 
+pi          constant::mathematical::pi;
+ 
+//Edit the initialConditions*.tpl file
+ 
+//---------Flow Charateristics------------------------------------------------//
+pressure           0;        // Outlet Pressure
+TI                 0.15;     // turbulent intensity
+ux                 0.8;      // flow velocity
+flowVelocity      ($ux 0 0); // velocity vector
+ 
+ 
+//--------Turbine Characteristics--------------------------------------------//
+radius       0.35;                             // Radius of Turbine
+diskDir     (1 0 0);                           // orientation of the disk
+diskArea    #calc "$pi*$radius*$radius/2.0";   // disk area
+Ct           0.72;                             // Thrust Coefficient
+point1       (6.0   0.0  -1.0);                // Turbine location 1
+point2       (6.11  0.0  -1.0);                // Turbine location 2
+ 
+ 
+//--------Turbulence Characteristics-----------------------------------------//
+cmu               0.09;                                      // nu_T = c_mu * k**2 *epsilon
+l                 #calc "$radius*2.";                         // length scale (turbine diameter)
+turbulentKE       #calc "3.0/2.0*pow($TI*$ux,2)";            // k
+turbulentEpsilon  #calc "$cmu*pow($turbulentKE,3.0/2.0)/$l"; // epsilon
+// Vegitative Capnopy model constants
+Bp  0 ;
+Bd  0 ;
+Ce4 0 ;
+Ce5 0 ;
+ 
+ 
+// ************************************************************************* //

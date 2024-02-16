@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ $# -lt 2 ]; then
+  echo 'usage multi_submit #times jobfile [dependency job ID]'
+  exit 1
+fi
+
+ntimes=$1
+jobfile=$2
+
+if [ $# -eq 3 ]; then
+  jobid=$3
+  lineout=`sbatch --dependency=afterany:$jobid $jobfile`
+  echo $lineout submitted with dependency $jobid
+  jobid=`echo $lineout | awk '{print $4}'`
+else
+  lineout=`sbatch $jobfile`
+  echo $lineout
+  jobid=`echo $lineout | awk '{print $4}'`
+fi
+
+for (( start = 2; start <= $ntimes; start++ ));do
+  lineout=`sbatch --dependency=afterany:$jobid $jobfile`
+  echo $lineout submitted with dependency $jobid
+  jobid=`echo $lineout | awk '{print $4}'`
+done
+
